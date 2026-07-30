@@ -72,17 +72,39 @@
         color: var(--muted);
       }
 
+      .clock-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .clock-box {
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+      }
+
+      .clock-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        margin-bottom: 0.4rem;
+      }
+
       .time {
-        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-size: clamp(1.3rem, 3vw, 2rem);
         font-weight: 700;
         letter-spacing: 0.04em;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.2rem;
       }
 
       .date {
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: var(--muted);
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
       }
 
       .status {
@@ -117,36 +139,53 @@
   </head>
   <body>
     <main class="clock-card">
-      <p class="eyebrow">Live Indian Standard Time</p>
-      <h1 id="time" class="time">--:--:--</h1>
-      <p id="date" class="date">Loading date...</p>
-      <p class="status">Asia/Kolkata • IST</p>
+      <p class="eyebrow">Live World Clocks</p>
+      <div class="clock-grid">
+        <div class="clock-box">
+          <p class="clock-label">IST</p>
+          <h1 id="ist-time" class="time">--:--:--</h1>
+          <p id="ist-date" class="date">Loading date...</p>
+        </div>
+        <div class="clock-box">
+          <p class="clock-label">GMT</p>
+          <h1 id="gmt-time" class="time">--:--:--</h1>
+          <p id="gmt-date" class="date">Loading date...</p>
+        </div>
+      </div>
+      <p class="status">Asia/Kolkata • GMT</p>
     </main>
 
     <script>
-      const timeEl = document.getElementById("time");
-      const dateEl = document.getElementById("date");
+      const istTimeEl = document.getElementById("ist-time");
+      const istDateEl = document.getElementById("ist-date");
+      const gmtTimeEl = document.getElementById("gmt-time");
+      const gmtDateEl = document.getElementById("gmt-date");
 
       function updateClock() {
         const now = new Date();
-        const istTime = new Intl.DateTimeFormat("en-IN", {
-          timeZone: "Asia/Kolkata",
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        }).format(now);
 
-        const istDate = new Intl.DateTimeFormat("en-IN", {
-          timeZone: "Asia/Kolkata",
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }).format(now);
+        const formatTime = (timeZone) =>
+          new Intl.DateTimeFormat("en-GB", {
+            timeZone,
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          }).format(now);
 
-        timeEl.textContent = istTime;
-        dateEl.textContent = istDate;
+        const formatDate = (timeZone) =>
+          new Intl.DateTimeFormat("en-GB", {
+            timeZone,
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }).format(now);
+
+        istTimeEl.textContent = formatTime("Asia/Kolkata");
+        istDateEl.textContent = formatDate("Asia/Kolkata");
+        gmtTimeEl.textContent = formatTime("Etc/GMT");
+        gmtDateEl.textContent = formatDate("Etc/GMT");
       }
 
       updateClock();
